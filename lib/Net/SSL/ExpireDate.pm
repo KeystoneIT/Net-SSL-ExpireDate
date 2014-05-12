@@ -95,7 +95,7 @@ sub expire_date {
             my $cert = eval { _peer_certificate($host, $port, $self->{timeout}); };
             warn $@ if $@;
             return unless $cert;
-            my $x509 = Crypt::OpenSSL::X509->new_from_string($cert, FORMAT_ASN1);
+            my $x509 = $self->{x509} = Crypt::OpenSSL::X509->new_from_string($cert, FORMAT_ASN1);
             my $begin_date_str  = $x509->notBefore;
             my $expire_date_str = $x509->notAfter;
 
@@ -113,6 +113,8 @@ sub expire_date {
 
     return $self->{expire_date};
 }
+
+sub x509 { shift->{x509} }
 
 sub begin_date {
     my $self = shift;
